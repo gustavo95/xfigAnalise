@@ -17,7 +17,7 @@ public class ColetarFluxo {
 	public ArrayList<String> getVulnerabilidadesLinks() throws IOException{
 		ArrayList<String> vulnerabilitiesLinks = new ArrayList<String>();
 		
-		Connection connection = Jsoup.connect("http://www.cvedetails.com/vulnerability-list/vendor_id-9795/Xfig.html");
+		Connection connection = Jsoup.connect("http://www.cvedetails.com/vulnerability-list/vendor_id-9795/Xfig.html").timeout(300000);
 		Document doc = connection.get();
 		
 		Pattern pattern = Pattern.compile("(http.*cvedetails.*CVE-[0-9]*-[0-9]*)");
@@ -123,6 +123,34 @@ public class ColetarFluxo {
         //System.out.println(result);
         
         return patchDiff;
+	}
+	
+	public String getFile(String patch){
+		String file = "";
+		
+		Pattern pattern = Pattern.compile("(\\+\\+\\+ .*\\.c)");
+		
+		Matcher matcher = pattern.matcher(patch);
+        if(matcher.find()) {
+        	String result = matcher.group();
+        	file = result.substring(4, result.length());
+        }
+		
+		return file;
+	}
+	
+	public ArrayList<String> getFunction(String patch){
+		ArrayList<String> function = new ArrayList<String>();
+		
+		Pattern pattern = Pattern.compile("(?<=\\s+@@).*?\\s*@@(.*?\\()");
+		
+		Matcher matcher = pattern.matcher(patch);
+        while(matcher.find()) {
+        	String result = matcher.group();
+        	function.add(result.substring(4, result.length()));
+        }
+		
+		return function;
 	}
 
 }
