@@ -6,22 +6,23 @@ import java.util.ArrayList;
 public class Main {
 
 	public static void main(String[] args) throws Exception {
-		//Vulnerabilidades vul = new Vulnerabilidades();
-		//ArrayList<String> temp = vul.getTemp();
-
-		//for(String log : temp){
-		//	System.out.println(log);
-		//}
-
-		//LogsDiffs logs = new LogsDiffs();
-		//logs.getLogs();
-		//logs.getDiffs();
+		ColetarFluxo cf = new ColetarFluxo();
 		
-		BugsPatches b = new BugsPatches();
-		ArrayList<String> temp = b.getPatches();
+		ArrayList<String> vulnerabilidades = cf.getVulnerabilidadesLinks();
+		ArrayList<String> bugs;
+		ArrayList<String> patch;
 		
-		for(String log : temp){
-			System.out.println(log);
+		for(String vLink : vulnerabilidades){
+			System.out.println("\nVulnerabilidade: " + vLink);
+			bugs = cf.getBugsLinks(vLink);
+			for(String bLink : bugs){
+				System.out.println("Bug: " + bLink);
+				patch = cf.getPatchLink(bLink);
+				for(String pLink : patch){
+					System.out.println("Patch: " + pLink);
+					System.out.println("Diff: " + cf.getPatchDiff(pLink));
+				}
+			}
 		}
 	}
 
